@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+h2{
+  color: #f5f5f5;
+  margin-top: 0;
+}
+
+#styles {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin-top: 10px;
+  font-family:cursive;
+}#tt{
+  float: right;
+}
+
+.plis {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding:  5px;
+        background-image: linear-gradient(rgb(134, 189, 232), rgb(77, 160, 219));
+        border-radius: 5px;
+        font-family: cursive;
+    }
+
+img {
+  width: 70px;
+  height: 70px;
+  margin-right: 10px;
+}
+
+#btn {
+  background-color: #2196f3;
+  color: #fff;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  margin-right: 10px;
+}
+
+ #styles{
+  font-size: 1.2rem;
+  background-image: linear-gradient(rgb(50, 150, 232), rgb(111, 149, 176));
+    border: 1px none rgba(70, 70, 237);
+    border-radius: 20px;
+    width: 70%;
+    margin:  auto;
+    color: #f5f5f5;
+
+}
+
+#temp{
+  margin-top: 15px;
+  font-size: 2em;
+}
+
+#art{
+ display: none;
+}
+
+*{
+ 
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  font-family: Arial, Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  background-image: linear-gradient(rgb(102, 176, 237), rgb(192, 213, 228));
+  background-repeat: no-repeat;
+
+}
+#pad{
+  padding: 0 0 0 35px;
+}
+#tp_c{
+  font-size: 2em;
+}
+#h1{
+  color: #cfe0ed;
+  font-size: 2em;
+  margin-bottom: 0;
+  margin-top: 0;
+  margin-left: 200px;
+  text-align: center;
+  opacity: 0.8;
+  font-family: monospace;
+}
+
+@media (max-width: 600px) {
+  #styles {
+    width: 90%;
+  }
+
+  #h1 {
+    margin-left: 0;
+  }
+}
+
+    </style>
+</head>
+<body>
+
+    <div>
+   <h2><label for="city"> Pays: 
+    <input type="text" name="city" id="city" value="Paris">
+    
+    <button id="btn">Envoyer</button><span id="h1">Météo</span>
+</label></h2>
+</div> 
+<div id="styles">
+ <div id="container">
+  
+  <span></span>
+  <img src="" id="art">
+  <span id="temp"></span></div>
+    <main id="def"></main>
+  </div>
+    <script>
+          document.querySelector('#btn').onclick = function () { 
+            
+        let xhr = new XMLHttpRequest()
+        xhr.onload = function () {
+          
+            let donnee = JSON.parse(this.responseText) 
+            
+            let humid = donnee.main.humidity
+            let main1 = donnee.weather[0].main
+            let desc = donnee.weather[0].description
+            let temperature = Math.ceil(donnee.main.temp);
+            let wind = donnee.wind.speed;
+            let temp_min = Math.floor(donnee.main.temp_min)
+            let temp_max = Math.ceil(donnee.main.temp_max)
+            let country = donnee.sys.country
+
+            let rise = new Date(donnee.sys.sunrise * 1000).toLocaleTimeString()
+            let set = new Date(donnee.sys.sunset * 1000).toLocaleTimeString()
+            let icon = donnee.weather[0].icon;
+            let icon2 = donnee.weather[0].icon;
+            
+            let iconUrl = `http://openweathermap.org/img/w/${icon}.png`;
+            let urls = `https://openweathermap.org/img/wn/${icon2}@2x.png`
+            
+
+            let city =  document.getElementById('city').value
+            let img1 =  document.querySelector("img")
+            let temp =  document.querySelector("#temp")
+            img1.src =  iconUrl
+
+            let span = document.querySelectorAll("span")
+  
+            temp.innerHTML = ` <span id= "tp_c">${temperature}</span><sup>°C</sup> ${city}`
+            span[0].appendChild(img1)
+
+            let html = `
+            <div>
+            <img src="${urls}" alt="">
+            <p>Pays: ${country}</p>
+            <p>Humidité:${humid}% <span id="tt"> 
+            <img src="${iconUrl}" alt="">
+            Pluie: ${main1}</span></p>
+            </div>
+            
+          <div class="plis">
+            <p>Description: ${desc}</p>     
+            <p>Vent: ${wind} m/s</p>
+          </div>
+
+        <div class="plis">
+          <p>Température Minimale:${temp_min}°C  </p>
+          <p>Léver de soleil:${rise}</p>
+        </div> 
+
+        <div class="plis">
+          <p>Température Maximale:${temp_max}°C  </p>
+          <p id="pad">  Coucher de soleil:${set}</p></div>
+            `
+             document.getElementById('def').innerHTML = html           
+        }
+
+            let city = document.getElementById('city').value
+            let apiKey = '8e410a81b086a99042c432c6676164c4';
+            let urlApi = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            xhr.open('GET', urlApi)
+            xhr.send()
+          }
+    </script>
+</body>
+</html>
